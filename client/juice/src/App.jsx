@@ -8,8 +8,10 @@ import JuiceDetails from './pages/juiceDetails'
 import { useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import useLoadUser from './pages/LoadUser'
+import PrivateRoutes from './components/PrivateRoutes'
+import { Toaster } from 'react-hot-toast'
 function App() {
-  const { currentUser } = useSelector((state)=>state.user)
+  const { isAuthenticated, currentUser, loading } = useSelector((state)=>state.user)
   const loadUser = useLoadUser()
   useEffect(()=>{
     loadUser()
@@ -19,10 +21,19 @@ function App() {
       <Navbar/>
       <Routes>
         <Route path='/' element={<Home/>} />
-            <Route path='/register' element={<Register/>} />
-            <Route path='/login' element={<Login/>} />
+            <Route path='/register' element={
+              <PrivateRoutes>
+                <Register/>
+              </PrivateRoutes>
+            } />
+            <Route path='/login' element={
+              <PrivateRoutes>
+                <Login/>
+              </PrivateRoutes>
+            } />
         <Route path='/details' element={<JuiceDetails/>} />
       </Routes>
+      <Toaster/>
      </Router>
   )
 }

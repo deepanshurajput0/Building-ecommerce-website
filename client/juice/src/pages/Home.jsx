@@ -1,23 +1,9 @@
 import React from 'react'
 import Juice from './../../public/images/juice.png'
 import Products from './Products'
-import { loadUserSuccess, loadUserStart, loadUserFail } from './../redux/user/userSlice'
-import { useDispatch } from 'react-redux'
+
 const Home = () => {
-    const dispatch = useDispatch()
-    const loadUser =async()=>{
-        dispatch(loadUserStart())
-       try {
-        const res = await fetch('/api/v1/user/me')
-        const data = await res.json()
-        if(!res.ok){
-          loadUserFail(data.message)
-        }
-        dispatch(loadUserSuccess(data.user))
-       } catch (error) {
-        dispatch(loadUserFail(error.message))
-       }
-    }
+
   return (
    <div>
        <div className=' bg-[#ffffffcc] md:flex md:justify-evenly md:items-center md:p-8' >

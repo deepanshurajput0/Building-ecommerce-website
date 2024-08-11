@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { signupStart, signupFail, signupSuccess } from "../redux/user/userSlice";
+import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
 const Register = () => {
   const dispatch = useDispatch()
+  const { loading } = useSelector((state)=>state.user)
   const [user, setUser] = useState({
     firstName: "",
     lastName: "",
@@ -31,10 +34,14 @@ const Register = () => {
       console.log(data)
       if(!res.ok){
         dispatch(signupFail(data.message))
+        toast.error(data.message)
+      }else{
+        dispatch(signupSuccess(data.user))
       }
-      dispatch(signupSuccess(data.user))
+      
     } catch (error) {
       dispatch(signupFail(error.message))
+      toast.error(error.message)
     }
   }
   return (
@@ -115,7 +122,11 @@ const Register = () => {
                 </label>
               </div>
               <div className="form-control mt-2">
-              <button type="submit" className=' hover:bg-[#b6e107] hover:scale-105  w-[20rem] font-semibold rounded-3xl p-3  bg-[#b0c751]' >Register</button>
+              <button type="submit" className=' hover:bg-[#b6e107] hover:scale-105  w-[20rem] font-semibold rounded-3xl p-3  bg-[#b0c751]' >
+                {
+                  loading ? <span class=" loading loading-spinner loading-xs"></span> : 'Register'
+                }
+              </button>
               </div>
             </form>
           </div>

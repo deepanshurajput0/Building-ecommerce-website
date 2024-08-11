@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { loginStart, loginSuccess, loginFail } from './../redux/user/userSlice'
+import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 const Login = () => {
   const dispatch = useDispatch()
+  const { loading } = useSelector((state)=>state.user)
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -27,8 +30,11 @@ const Login = () => {
       const data = await res.json()
       if(!res.ok){
         dispatch(loginFail(data.message))
+        toast.error(data.message)
+      }else{
+        dispatch(loginSuccess(data.user))
       }
-      dispatch(loginSuccess(data.user))
+     
      } catch (error) {
       dispatch(loginFail(error.message))
      }
@@ -85,7 +91,9 @@ const Login = () => {
                   type="submit"
                   className=" hover:bg-[#b6e107] hover:scale-105  w-[20rem] font-semibold rounded-3xl p-3  bg-[#b0c751]"
                 >
-                  Login
+                  {
+                    loading ? <span class=" loading loading-spinner loading-xs"></span> :'Login'
+                  }
                 </button>
               </div>
             </form>
