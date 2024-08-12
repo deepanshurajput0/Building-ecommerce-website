@@ -60,7 +60,7 @@ const Navbar = () => {
          <span className=' text-2xl font-semibold' >{currentUser?.firstName[0]}</span>
       </summary>
       <ul className="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
-        <li><a>My Profile</a></li>
+        <li><Link to={'/profile'} >My Profile</Link></li>
         <li onClick={logout} ><a>Logout</a></li>
       </ul>
     </details>

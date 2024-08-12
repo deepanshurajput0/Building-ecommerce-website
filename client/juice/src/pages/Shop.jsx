@@ -1,40 +1,69 @@
-import React, { useEffect } from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getProductsFail, getProductsSuccess, getProductsStart } from './../redux/user/productSlice'
+import { useEffect } from 'react'
 import Skeleton from './Skeleton'
-const Products = () => {
- const { products, loading } = useSelector((state)=>state.products)
- const dispatch = useDispatch()
- const getProducts =async(e)=>{
+import { IoMdSearch } from "react-icons/io";
+import toast from 'react-hot-toast'
+import Loader from '../components/Loader'
 
-  try {
-    dispatch(getProductsStart())
-    const res = await fetch('/api/v1/juice/getjuice',{
-      method:'GET'
-    })
-    const data = await res.json()
-    if(!res.ok){
-      dispatch(getProductsFail(data.message))
-      toast.error(data.message)
-    }else{
-      dispatch(getProductsSuccess(data))
-    }
-    
-  } catch (error) {
-    dispatch(getProductsFail(error.message))
-    toast.error(error.message)
-  }
-}
-useEffect(()=>{
-   getProducts()
-},[])
+const Shop = () => {
+    const { products, loading } = useSelector((state)=>state.products)
+    const dispatch = useDispatch()
+    const [search,setSearch] = useState('')
+    const [minPrice,setMinPrice] = useState(0)
+    console.log(minPrice)
+    const getProducts =async(e)=>{
+   
+     try {
+       dispatch(getProductsStart())
+       const res = await fetch(`/api/v1/juice/getjuice?search=${search}&minPrice=${minPrice}`,{
+         method:'GET'
+       })
+       const data = await res.json()
+       if(!res.ok){
+         dispatch(getProductsFail(data.message))
+         toast.error(data.message)
+       }else{
+         dispatch(getProductsSuccess(data))
+       }
+       
+     } catch (error) {
+       dispatch(getProductsFail(error.message))
+       toast.error(error.message)
+     }
+   }
+   useEffect(()=>{
+      getProducts()
+   },[search,minPrice])
   return (
-<div>
-  
+    <div>
+ 
  {
-  loading ? <Skeleton/> : <>
-     <h1 className=' text-5xl font-bold text-center mt-5' >Our Juices</h1>
-   <div className=' mt-20 flex flex-wrap flex-col items-center md:flex-row justify-evenly' >
+  loading ? <Loader/> : <>
+     {/* <h1 className=' text-5xl font-bold text-center mt-5' >All Juices</h1> */}
+  <div className=' flex p-5' >
+  <div className=' space-y-4' >
+  <div className=' flex justify-center items-center gap-4' >
+    <input
+     type="text" 
+    placeholder="Type here"
+    onChange={(e)=>setSearch(e.target.value)}
+    value={search}
+    className="input input-bordered 
+    w-full max-w-xs" />
+    <div className=' bg-[#b0c751] p-2 rounded-xl cursor-pointer' >
+      <IoMdSearch size={30} />
+    </div>
+       
+    </div>
+      <div className=' pt-14 space-y-4' >
+      <p className=' text-[18px]'>Filter Products by Prices</p>
+        <p className=' font-semibold text-2xl'>Price: {minPrice}$</p>
+       <input type="range" onChange={(e)=>setMinPrice(e.target.value)}  min='0' max="1000" value={minPrice} className="range  w-[20rem] range-xs" />
+      </div>
+       </div>
+  <div className=' mt-20 flex flex-wrap flex-col items-center md:flex-row justify-evenly' >
  {
   products.length>0 && products?.map((item)=>(
     <div key={item._id} class="relative m-10 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md">
@@ -84,7 +113,9 @@ useEffect(()=>{
   ))
  }
 
+
     </div>
+  </div>
     
   </>
  }
@@ -92,5 +123,8 @@ useEffect(()=>{
   )
 }
 
-export default Products
+export default Shop
+
+
+
 

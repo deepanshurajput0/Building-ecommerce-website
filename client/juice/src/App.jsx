@@ -10,6 +10,8 @@ import { useEffect } from 'react'
 import useLoadUser from './pages/LoadUser'
 import PrivateRoutes from './components/PrivateRoutes'
 import { Toaster } from 'react-hot-toast'
+import Shop from './pages/Shop'
+import MyProfile from './pages/MyProfile'
 function App() {
   const { isAuthenticated, currentUser, loading } = useSelector((state)=>state.user)
   const loadUser = useLoadUser()
@@ -32,6 +34,8 @@ function App() {
               </PrivateRoutes>
             } />
         <Route path='/details' element={<JuiceDetails/>} />
+        <Route path='/shop' element={<Shop/>} />
+        <Route path='/profile' element={<MyProfile/>} />
       </Routes>
       <Toaster/>
      </Router>
