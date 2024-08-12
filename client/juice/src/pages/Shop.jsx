@@ -5,7 +5,6 @@ import { useEffect } from 'react'
 import Skeleton from './Skeleton'
 import { IoMdSearch } from "react-icons/io";
 import toast from 'react-hot-toast'
-import Loader from '../components/Loader'
 
 const Shop = () => {
     const { products, loading } = useSelector((state)=>state.products)
@@ -39,8 +38,6 @@ const Shop = () => {
   return (
     <div>
  
- {
-  loading ? <Loader/> : <>
      {/* <h1 className=' text-5xl font-bold text-center mt-5' >All Juices</h1> */}
   <div className=' flex p-5' >
   <div className=' space-y-4' >
@@ -117,8 +114,6 @@ const Shop = () => {
     </div>
   </div>
     
-  </>
- }
 </div>
   )
 }
