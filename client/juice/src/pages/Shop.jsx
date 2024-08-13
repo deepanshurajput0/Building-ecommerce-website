@@ -11,12 +11,14 @@ const Shop = () => {
     const dispatch = useDispatch()
     const [search,setSearch] = useState('')
     const [minPrice,setMinPrice] = useState(0)
+    const [page,setPage] = useState(1)
+    const [totalPages,setTotalPages] = useState()
     console.log(minPrice)
     const getProducts =async(e)=>{
    
      try {
        dispatch(getProductsStart())
-       const res = await fetch(`/api/v1/juice/getjuice?search=${search}&minPrice=${minPrice}`,{
+       const res = await fetch(`/api/v1/juice/getjuice?search=${search}&minPrice=${minPrice}&page=${page}`,{
          method:'GET'
        })
        const data = await res.json()
@@ -24,7 +26,8 @@ const Shop = () => {
          dispatch(getProductsFail(data.message))
          toast.error(data.message)
        }else{
-         dispatch(getProductsSuccess(data))
+         dispatch(getProductsSuccess(data.products))
+         setTotalPages(data.totalPages)
        }
        
      } catch (error) {
@@ -34,7 +37,14 @@ const Shop = () => {
    }
    useEffect(()=>{
       getProducts()
-   },[search,minPrice])
+   },[search,minPrice,page])
+
+   const handleNext=()=>{
+      if(page < totalPages) setPage(page+1)
+   }
+  const handlePrev=()=>{
+    if(page > 1) setPage(page-1)
+  }
   return (
     <div>
  
@@ -113,7 +123,10 @@ const Shop = () => {
 
     </div>
   </div>
-    
+  <div className="join ">
+  <button className="join-item btn btn-outline" onClick={handlePrev} >Previous page</button>
+  <button className="join-item btn btn-outline" onClick={handleNext} >Next</button>
+</div>
 </div>
   )
 }
