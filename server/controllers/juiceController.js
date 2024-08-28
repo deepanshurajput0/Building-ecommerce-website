@@ -41,8 +41,25 @@ export const createJuice =async(req,res)=>{
 
 export const getAllJuices =async(req,res)=>{
   try {
-     const products = await Juice.find({})
-     res.status(200).json(products)
+    const search = req.query.search || ''
+    const minPrice = req.query.minPrice ? parseFloat(req.query.minPrice) : 0
+    const maxPrice = req.query.maxPrice ? parseFloat(req.query.maxPrice) : Infinity
+    const page = req.query.page ? parseInt(req.query.page) : 1
+    const limit = 6 
+    const query = {
+      name: {$regex:search,$options:'i'},
+      price:{$gte:minPrice, $lte:maxPrice}
+    }
+     const skip = (page - 1) * limit
+
+     const products = await Juice.find(query).skip(skip).limit(limit)
+     const totalPosts = await Juice.countDocuments()
+
+     res.status(200).json({
+      totalPages:Math.ceil(totalPosts/limit),
+      currentPage:page,
+      products
+     })
   } catch (error) {
     console.log(error)
     res.status(500).json({
